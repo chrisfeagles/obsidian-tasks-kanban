@@ -1,0 +1,11 @@
+{
+	"id": "tasks-kanban",
+	"name": "Tasks Kanban Board",
+	"version": "1.0.0",
+	"minAppVersion": "1.8.10",
+	"description": "A Kanban board view for managing tasks from the Tasks plugin with drag and drop functionality.",
+	"author": "Chris Feagles",
+	"authorUrl": "",
+	"fundingUrl": "",
+	"isDesktopOnly": true
+}
