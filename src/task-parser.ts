@@ -94,7 +94,7 @@ export class TaskParser {
 		return tasks;
 	}
 
-	private getColumnFromStatus(status: string): string {
+	public getColumnFromStatus(status: string): string {
 		switch (status) {
 			case ' ':
 			case '':
