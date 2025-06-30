@@ -2,6 +2,29 @@
 
 An Obsidian plugin that provides a Kanban board view for managing tasks from the Tasks plugin with drag-and-drop functionality.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Supported Task Formats](#supported-task-formats)
+  - [Task Metadata](#task-metadata)
+  - [Example Task](#example-task)
+  - [Enhanced Task Display](#enhanced-task-display)
+  - [Task Editing](#task-editing)
+  - [Drag & Drop](#drag--drop)
+  - [Multiple Boards](#multiple-boards)
+  - [Board Configuration Options](#board-configuration-options)
+  - [Example Board Configurations](#example-board-configurations)
+  - [Swimlanes](#swimlanes)
+- [Commands](#commands)
+- [Settings](#settings)
+  - [Board Management](#board-management)
+  - [Board Configuration](#board-configuration)
+  - [Settings Access](#settings-access)
+- [Development](#development)
+- [License](#license)
+
 ## Features
 
 - **Multiple Boards**: Create and manage unlimited custom boards with independent configurations
