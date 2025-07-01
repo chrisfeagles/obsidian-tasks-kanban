@@ -41,6 +41,8 @@ An Obsidian plugin that provides a Kanban board view for managing tasks from the
 - **Due Date Sorting**: Sort tasks within columns by due date
 - **Custom Column Sorting**: Define custom column order for each board
 - **Board Switching**: Quick board selection with dropdown in the view
+- **Completed Task Limits**: Configure maximum number of completed tasks to display per board
+- **Separate Window Support**: Open Kanban boards in detached windows for multi-monitor setups
 - **Responsive Design**: Works on different screen sizes with optimized touch targets
 - **Real-time Updates**: Board and settings automatically refresh when configurations change
 
@@ -70,6 +72,7 @@ The plugin supports comprehensive task metadata:
 - **Start Date**: `🛫 2024-01-10` - When the task should be started
 - **Scheduled Date**: `⏰2024-01-12` - When the task is scheduled to be worked on
 - **Due Date**: `📅 2024-01-15` - When the task must be completed
+- **Completed Date**: `✅ 2024-01-16` - When the task was completed (used for limiting completed task display)
 - **Priorities**: `🔺 High`, `🔼 Medium`, `🔽 Low`
 - **Tags**
 - **Linked Notes**: `[[Note Name]]` or `[[Note Name|Display Text]]`
@@ -182,9 +185,44 @@ Example swimlane configuration:
 - **Personal Tasks**: Tags `personal`, `home`
 - **Urgent Tasks**: Tags `urgent`, `critical`
 
+### Completed Task Management
+
+Control the display of completed tasks to keep your board focused:
+
+- **Completion Date Tracking**: Add `✅ 2024-01-16` to tasks to track when they were completed
+- **Smart Limiting**: Configure maximum completed tasks per board (default: 50)
+- **Automatic Sorting**: Completed tasks are sorted by completion date (most recent first)
+- **Flexible Display**: Set to 0 for unlimited completed tasks, or any number to limit display
+- **Per-Board Control**: Each board can have different completed task limits
+
+**Example Usage:**
+```markdown
+- [x] Completed task with date ✅ 2024-01-16
+- [x] Recently completed task ✅ 2024-01-20
+- [x] Older completed task ✅ 2024-01-10
+```
+
+With a limit of 2, only the two most recently completed tasks would be shown.
+
+### Separate Window Support
+
+Open Kanban boards in detached windows for enhanced productivity:
+
+- **Multi-Monitor Setup**: Perfect for users with multiple monitors
+- **Independent Views**: Each window operates independently
+- **Full Functionality**: All features work the same in detached windows
+- **Easy Access**: Available via command palette or ribbon icon
+
+**Use Cases:**
+- Keep a board visible on a secondary monitor
+- Work with multiple boards simultaneously
+- Separate project boards from personal boards
+- Enhanced focus with dedicated board windows
+
 ## Commands
 
-- **Open Tasks Kanban Board**: Opens the Kanban board view
+- **Open Tasks Kanban Board**: Opens the Kanban board view in a tab
+- **Open Tasks Kanban Board in New Window**: Opens the Kanban board in a separate detached window
 
 ## Settings
 
@@ -206,6 +244,7 @@ Each board can be independently configured with:
 - **Columns**: Comma-separated list of column names (e.g., "Todo, In Progress, Done")
 - **Tag Filters**: Filter tasks to show only those with specific tags
 - **Sort by Due Date**: Automatically sort tasks within columns by due date (earliest first)
+- **Max Completed Items**: Maximum number of completed tasks to show (0 for unlimited). Tasks are sorted by completion date with most recent shown first
 
 #### Swimlane Settings (Per Board)
 - **Enable Swimlanes**: Toggle swimlane view on/off for this board

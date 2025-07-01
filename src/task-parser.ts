@@ -13,6 +13,7 @@ export interface Task {
 	startDate?: string;
 	scheduledDate?: string;
 	dueDate?: string;
+	completedDate?: string;
 	tags: string[];
 	priority?: string;
 	linkedNotes: string[];
@@ -57,6 +58,11 @@ export class TaskParser {
 			this.sortTasksByColumnOrder(filteredTasks, board.columnSortOrder);
 		}
 
+		// Limit completed tasks if specified
+		if (board && board.maxCompletedItems > 0) {
+			filteredTasks = this.limitCompletedTasks(filteredTasks, board.maxCompletedItems);
+		}
+
 		return filteredTasks;
 	}
 
@@ -83,6 +89,7 @@ export class TaskParser {
 					startDate: this.extractStartDate(taskText),
 					scheduledDate: this.extractScheduledDate(taskText),
 					dueDate: this.extractDueDate(taskText),
+					completedDate: this.extractCompletedDate(taskText),
 					priority: this.extractPriority(taskText),
 					linkedNotes: this.extractLinkedNotes(taskText)
 				};
@@ -131,6 +138,11 @@ export class TaskParser {
 	private extractDueDate(text: string): string | undefined {
 		const dueDateMatch = text.match(/📅\s*(\d{4}-\d{2}-\d{2})/);
 		return dueDateMatch ? dueDateMatch[1] : undefined;
+	}
+
+	private extractCompletedDate(text: string): string | undefined {
+		const completedDateMatch = text.match(/✅\s*(\d{4}-\d{2}-\d{2})/);
+		return completedDateMatch ? completedDateMatch[1] : undefined;
 	}
 
 	private extractPriority(text: string): string | undefined {
@@ -258,6 +270,36 @@ export class TaskParser {
 			
 			return aPos - bPos;
 		});
+	}
+
+	private limitCompletedTasks(tasks: Task[], maxCompletedItems: number): Task[] {
+		// Separate completed tasks from others
+		const completedTasks = tasks.filter(task => task.column === 'Done');
+		const otherTasks = tasks.filter(task => task.column !== 'Done');
+
+		// Sort completed tasks by completed date (most recent first)
+		completedTasks.sort((a, b) => {
+			const aDate = a.completedDate;
+			const bDate = b.completedDate;
+			
+			// If both have completed dates, sort by date (newest first)
+			if (aDate && bDate) {
+				return bDate.localeCompare(aDate);
+			}
+			
+			// If only one has a completed date, prioritize it
+			if (aDate && !bDate) return -1;
+			if (!aDate && bDate) return 1;
+			
+			// If neither has completed date, maintain original order
+			return 0;
+		});
+
+		// Take only the specified number of completed tasks
+		const limitedCompletedTasks = completedTasks.slice(0, maxCompletedItems);
+
+		// Return combined tasks
+		return [...otherTasks, ...limitedCompletedTasks];
 	}
 
 	getTasksBySwimlane(tasks: Task[]): { [swimlane: string]: Task[] } {

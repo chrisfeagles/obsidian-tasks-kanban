@@ -16,6 +16,7 @@ export interface KanbanBoard {
 	swimlanes: Swimlane[];
 	sortByDueDate: boolean;
 	columnSortOrder: string[];
+	maxCompletedItems: number;
 }
 
 export interface TasksKanbanSettings {
@@ -40,7 +41,8 @@ const DEFAULT_BOARD: KanbanBoard = {
 		{ name: 'Personal Tasks', tags: ['personal'], enabled: true }
 	],
 	sortByDueDate: true,
-	columnSortOrder: ['Todo', 'In Progress', 'Done']
+	columnSortOrder: ['Todo', 'In Progress', 'Done'],
+	maxCompletedItems: 50
 };
 
 const DEFAULT_SETTINGS: TasksKanbanSettings = {
@@ -71,6 +73,14 @@ export default class TasksKanbanPlugin extends Plugin {
 			}
 		});
 
+		this.addCommand({
+			id: 'open-tasks-kanban-window',
+			name: 'Open Tasks Kanban Board in New Window',
+			callback: () => {
+				this.activateViewInNewWindow();
+			}
+		});
+
 		this.addSettingTab(new TasksKanbanSettingTab(this.app, this));
 	}
 
@@ -97,7 +107,8 @@ export default class TasksKanbanPlugin extends Plugin {
 				swimlanesEnabled: this.settings.swimlanesEnabled || false,
 				swimlanes: this.settings.swimlanes || [],
 				sortByDueDate: this.settings.sortByDueDate || false,
-				columnSortOrder: this.settings.defaultColumns
+				columnSortOrder: this.settings.defaultColumns,
+				maxCompletedItems: 50
 			};
 			
 			this.settings.boards = [migratedBoard];
@@ -175,6 +186,18 @@ export default class TasksKanbanPlugin extends Plugin {
 
 		if (leaf) {
 			workspace.revealLeaf(leaf);
+		}
+	}
+
+	async activateViewInNewWindow() {
+		const { workspace } = this.app;
+		
+		// Create a new window
+		const newLeaf = workspace.getLeaf('window');
+		await newLeaf?.setViewState({ type: VIEW_TYPE_KANBAN, active: true });
+		
+		if (newLeaf) {
+			workspace.revealLeaf(newLeaf);
 		}
 	}
 }
@@ -255,7 +278,8 @@ class TasksKanbanSettingTab extends PluginSettingTab {
 			swimlanesEnabled: false,
 			swimlanes: [],
 			sortByDueDate: false,
-			columnSortOrder: ['Todo', 'In Progress', 'Done']
+			columnSortOrder: ['Todo', 'In Progress', 'Done'],
+			maxCompletedItems: 50
 		};
 		const modal = new BoardModal(this.app, newBoard, async (board) => {
 			this.plugin.addBoard(board);
@@ -318,6 +342,17 @@ class BoardModal extends Modal {
 				.setValue(this.board.sortByDueDate)
 				.onChange((value) => {
 					this.board.sortByDueDate = value;
+				}));
+
+		new Setting(contentEl)
+			.setName('Max Completed Items')
+			.setDesc('Maximum number of completed tasks to show (0 for unlimited)')
+			.addText(text => text
+				.setPlaceholder('50')
+				.setValue(this.board.maxCompletedItems.toString())
+				.onChange((value) => {
+					const num = parseInt(value) || 0;
+					this.board.maxCompletedItems = Math.max(0, num);
 				}));
 
 		new Setting(contentEl)

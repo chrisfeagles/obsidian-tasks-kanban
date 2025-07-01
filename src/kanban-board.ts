@@ -29,10 +29,18 @@ export class KanbanBoard {
 	}
 
 	init() {
+		// Remove any existing board layout classes
+		this.container.removeClass('kanban-board');
+		this.container.removeClass('kanban-board-swimlanes');
+		
+		// Add the base class
 		this.container.addClass('kanban-board');
+		
+		// Add swimlane class if enabled
 		if (this.boardConfig.swimlanesEnabled) {
 			this.container.addClass('kanban-board-swimlanes');
 		}
+		
 		this.createColumns();
 	}
 
